@@ -19,16 +19,16 @@ These tools are essential for a capable clawdbot instance - screen capture, came
 
 | Tool | What it does |
 |------|--------------|
-| **summarize** | AI-powered text/URL summarization |
-| **gogcli** | GOG Galaxy game library management |
-| **camsnap** | Grab snapshots from IP cameras (Hikvision, RTSP, etc.) |
+| **summarize** | Summarize URLs, PDFs, images, audio, YouTube |
+| **gogcli** | Google Workspace CLI (Gmail, Calendar, Drive, Contacts, Sheets, Docs) |
+| **camsnap** | Capture snapshots/clips from RTSP/ONVIF cameras |
 | **sonoscli** | Control Sonos speakers |
-| **bird** | Bluesky client |
-| **peekaboo** | macOS screen/window capture with metadata |
-| **poltergeist** | macOS UI automation |
-| **sag** | Text-to-speech via ElevenLabs |
-| **imsg** | Send/receive iMessages |
-| **oracle** | AI coding assistant |
+| **bird** | X/Twitter CLI (read, search, post) |
+| **peekaboo** | macOS screen capture + UI automation |
+| **poltergeist** | File watcher with auto-rebuild |
+| **sag** | ElevenLabs text-to-speech |
+| **imsg** | iMessage/SMS CLI |
+| **oracle** | Bundle prompts + files for AI queries |
 
 ## Usage (as clawdbot plugins)
 
