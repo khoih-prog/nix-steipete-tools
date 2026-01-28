@@ -3,14 +3,14 @@
 let
   sources = {
     "aarch64-darwin" = {
-      url = "https://github.com/steipete/bird/releases/download/v0.7.0/bird-macos-universal-v0.7.0.tar.gz";
-      hash = "sha256-Xo0L0VzF5EONP9AlmYzc59qR1xk9HSaLFfAxranS0w0=";
+      url = "https://github.com/steipete/bird/releases/download/v0.8.0/bird-macos-universal-v0.8.0.tar.gz";
+      hash = "sha256-PYm7QE6LDtTvMx8Nxi2HOFJjTKKoFK56Ssfv/BFDIM8=";
     };
   };
 in
 stdenv.mkDerivation {
   pname = "bird";
-  version = "0.7.0";
+  version = "0.8.0";
 
   src = fetchurl sources.${stdenv.hostPlatform.system};
 
