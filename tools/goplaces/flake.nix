@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs?rev=16c7794d0a28b5a37904d55bcca36003b9109aaa&narHash=sha256-fFUnEYMla8b7UKjijLnMe%2BoVFOz6HjijGGNS1l7dYaQ%3D";
-    root.url = "github:openclaw/nix-steipete-tools?rev=c67cb53c009dcb7e08b976984a3c82c1cdac6de1&narHash=sha256-MsllHfHFxDNs3BvNAzIQSRqkN4wAA2h8LfktWcKTE0E=";
+    root.url = "github:openclaw/nix-steipete-tools?rev=98fbe7d1f5d22a6ee7486273af070d0dcd78d2e9&narHash=sha256-SFgx/KXWOoBrocEJdAVJ38p5X9Cxmf8/3O/i/PJo8tg=";
   };
 
   outputs = { self, nixpkgs, root }:
