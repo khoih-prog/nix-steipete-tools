@@ -1,47 +1,31 @@
-{ lib, stdenv, fetchurl }:
+{ lib, buildGoModule, fetchFromGitHub }:
 
-let
-  sources = {
-    "aarch64-darwin" = {
-      url = "https://github.com/steipete/goplaces/releases/download/v0.2.1/goplaces_0.2.1_darwin_arm64.tar.gz";
-      hash = "sha256-haImHN6IS2eAMPd6YusOFreSuRc4e0uxpwrYTJkxle8=";
-    };
-    "x86_64-linux" = {
-      url = "https://github.com/steipete/goplaces/releases/download/v0.2.1/goplaces_0.2.1_linux_amd64.tar.gz";
-      hash = "sha256-oDsFtk+M/NOC3CLCgVpVws15VfY7NQdUMUZgdzTqwW0=";
-    };
-    "aarch64-linux" = {
-      url = "https://github.com/steipete/goplaces/releases/download/v0.2.1/goplaces_0.2.1_linux_arm64.tar.gz";
-      hash = "sha256-3PzBz0/DjOmD86yjQRW9Ak/J50/+NDLpjoByEuatmEU=";
-    };
-  };
-in
-stdenv.mkDerivation {
+buildGoModule rec {
   pname = "goplaces";
-  version = "0.2.1";
+  version = "0.2.2-dev";
 
-  src = fetchurl sources.${stdenv.hostPlatform.system};
+  src = fetchFromGitHub {
+    owner = "joshp123";
+    repo = "goplaces";
+    rev = "c7be7782989c4f2d24aba8c1122d0b6207247d31";
+    hash = "sha256-noyIyj7dtVscUUSUlcUhKt45QUH/bZL/fINwqR6fZS0=";
+  };
 
-  dontConfigure = true;
-  dontBuild = true;
+  subPackages = [ "cmd/goplaces" ];
 
-  unpackPhase = ''
-    tar -xzf "$src"
-  '';
+  ldflags = [
+    "-s"
+    "-w"
+    "-X github.com/steipete/goplaces/internal/cli.Version=${version}"
+  ];
 
-  installPhase = ''
-    runHook preInstall
-    mkdir -p "$out/bin"
-    cp $(find . -type f -name goplaces | head -1) "$out/bin/goplaces"
-    chmod 0755 "$out/bin/goplaces"
-    runHook postInstall
-  '';
+  vendorHash = "sha256-OFTjLtKwYSy4tM+D12mqI28M73YJdG4DyqPkXS7ZKUg=";
 
   meta = with lib; {
     description = "Modern Go client + CLI for the Google Places API";
-    homepage = "https://github.com/steipete/goplaces";
+    homepage = "https://github.com/joshp123/goplaces";
     license = licenses.mit;
-    platforms = builtins.attrNames sources;
+    platforms = platforms.darwin ++ platforms.linux;
     mainProgram = "goplaces";
   };
 }

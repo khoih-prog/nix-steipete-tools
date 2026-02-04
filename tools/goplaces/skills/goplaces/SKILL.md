@@ -31,12 +31,14 @@ Closest place to me
 - Pick the top result as the closest match unless distance is explicitly returned in output.
 
 Directions (A → B)
-- goplaces does NOT provide directions or ETA between two points.
-- `goplaces route` finds places along a route (Routes API) — not a directions/ETA tool.
-- For directions, generate a Google Maps link (no guessing):
-  - Coordinates: `https://www.google.com/maps/dir/?api=1&origin=<lat>,<lng>&destination=<lat>,<lng>`
-  - Place IDs: `https://www.google.com/maps/dir/?api=1&origin_place_id=<id>&destination_place_id=<id>`
-- If the user asks for time/distance, provide the link and ask them to open it.
+- Use the Directions API via the CLI (default mode: walking).
+- Place IDs (preferred for agent workflows):
+  - `goplaces directions --from-place-id <fromId> --to-place-id <toId>`
+- Add turn-by-turn steps:
+  - `goplaces directions --from-place-id <fromId> --to-place-id <toId> --steps`
+- Compare driving ETA alongside walking:
+  - `goplaces directions --from-place-id <fromId> --to-place-id <toId> --compare drive`
+- `goplaces route` is only for searching places along a route (Routes API), not directions/ETA.
 
 Notes
 - `--no-color` or `NO_COLOR` disables ANSI color.
