@@ -61,15 +61,6 @@ func PrefetchGitHub(owner, repo, rev string) (string, error) {
 	return res.Hash, nil
 }
 
-func NixBuildOracle() (string, error) {
-	cmd := exec.Command("nix", "build", ".#oracle")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Stderr = &out
-	err := cmd.Run()
-	return out.String(), err
-}
-
 func NixBuildSummarize() (string, error) {
 	return NixBuildSummarizeSystem("")
 }

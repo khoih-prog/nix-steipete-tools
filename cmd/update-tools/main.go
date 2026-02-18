@@ -140,85 +140,6 @@ func updateSummarize(repoRoot string) error {
 	return nil
 }
 
-func updateOracle(repoRoot string) error {
-	log.Printf("[update-tools] oracle")
-	oracleFile := filepath.Join(repoRoot, "nix", "pkgs", "oracle.nix")
-	orig, err := os.ReadFile(oracleFile)
-	if err != nil {
-		return err
-	}
-
-	rel, err := internal.LatestRelease("steipete/oracle")
-	if err != nil {
-		return err
-	}
-	version := strings.TrimPrefix(rel.TagName, "v")
-	var assetURL string
-	for _, a := range rel.Assets {
-		if matched, _ := regexp.MatchString(`oracle-[0-9.]+\.tgz`, a.Name); matched {
-			assetURL = a.BrowserDownloadURL
-			break
-		}
-	}
-	if assetURL == "" {
-		return fmt.Errorf("no asset matched for oracle")
-	}
-	assetHash, err := internal.PrefetchHash(assetURL)
-	if err != nil {
-		return err
-	}
-	lockHash, err := internal.PrefetchGitHub("steipete", "oracle", rel.TagName)
-	if err != nil {
-		return err
-	}
-
-	if err := internal.ReplaceOnce(oracleFile, regexp.MustCompile(`version = "[^"]+";`), fmt.Sprintf(`version = "%s";`, version)); err != nil {
-		return err
-	}
-	if err := internal.ReplaceOnce(oracleFile, regexp.MustCompile(`url = "[^"]+";`), fmt.Sprintf(`url = "%s";`, assetURL)); err != nil {
-		return err
-	}
-	if err := internal.ReplaceOnce(oracleFile, regexp.MustCompile(`hash = "sha256-[^"]+";`), fmt.Sprintf(`hash = "%s";`, assetHash)); err != nil {
-		return err
-	}
-	lockRe := regexp.MustCompile(`(?s)lockSrc = fetchFromGitHub \{[^}]*hash = "sha256-[^"]+";`)
-	if err := internal.ReplaceOnceFunc(oracleFile, lockRe, func(s string) string {
-		out := regexp.MustCompile(`rev = "[^"]+";`).ReplaceAllString(s, fmt.Sprintf(`rev = "%s";`, rel.TagName))
-		out = regexp.MustCompile(`hash = "sha256-[^"]+";`).ReplaceAllString(out, fmt.Sprintf(`hash = "%s";`, lockHash))
-		return out
-	}); err != nil {
-		return err
-	}
-	pnpmRe := regexp.MustCompile(`(?s)pnpmDeps.*hash = "sha256-[^"]+";`)
-	if err := internal.ReplaceOnceFunc(oracleFile, pnpmRe, func(s string) string {
-		return regexp.MustCompile(`hash = "sha256-[^"]+";`).ReplaceAllString(s, `hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";`)
-	}); err != nil {
-		return err
-	}
-
-	log.Printf("[update-tools] oracle: deriving pnpm hash")
-	logText, buildErr := internal.NixBuildOracle()
-	pnpmHash := internal.ExtractGotHash(logText)
-	if pnpmHash == "" {
-		// Restore original file so we don't leave a broken placeholder hash behind.
-		_ = os.WriteFile(oracleFile, orig, 0644)
-		// Surface some context in CI logs. This is usually a hash-mismatch line we failed to parse.
-		lines := strings.Split(logText, "\n")
-		start := 0
-		if len(lines) > 200 {
-			start = len(lines) - 200
-		}
-		log.Printf("[update-tools] oracle build output (last %d lines):\n%s", len(lines)-start, strings.Join(lines[start:], "\n"))
-		return fmt.Errorf("oracle pnpm hash not found (build err: %v)", buildErr)
-	}
-	if err := internal.ReplaceOnceFunc(oracleFile, pnpmRe, func(s string) string {
-		return regexp.MustCompile(`hash = "sha256-[^"]+";`).ReplaceAllString(s, fmt.Sprintf(`hash = "%s";`, pnpmHash))
-	}); err != nil {
-		return err
-	}
-	return nil
-}
-
 func main() {
 	repoRoot, err := os.Getwd()
 	if err != nil {
@@ -324,9 +245,4 @@ func main() {
 		}
 	}
 
-	if err := updateOracle(repoRoot); err != nil {
-		// Oracle releases occasionally ship with an out-of-date pnpm-lock.yaml.
-		// In that case, we keep the previously pinned version and still update other tools.
-		log.Printf("[update-tools] skipping oracle update: %v", err)
-	}
 }

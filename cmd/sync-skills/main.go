@@ -67,7 +67,6 @@ func main() {
 		{"peekaboo", "skills/peekaboo"},
 		{"sag", "skills/sag"},
 		{"imsg", "skills/imsg"},
-		{"oracle", "skills/oracle"},
 	}
 
 	log.Printf("[sync-skills] cloning clawdbot main")

@@ -21,7 +21,6 @@
         poltergeist = [ "aarch64-darwin" ];
         sag = [ "aarch64-darwin" "x86_64-linux" ];
         imsg = [ "aarch64-darwin" ];
-        oracle = [ "aarch64-darwin" "x86_64-linux" "aarch64-linux" ];
       };
     in {
       packages = forAllSystems (system:
@@ -62,12 +61,6 @@
           })
           // (lib.optionalAttrs (supports "imsg") {
             imsg = pkgs.callPackage ./nix/pkgs/imsg.nix {};
-          })
-          // (lib.optionalAttrs (supports "oracle") {
-            oracle = pkgs.callPackage ./nix/pkgs/oracle.nix {
-              pkgs = pkgs;
-              pnpm = if pkgs ? pnpm_10 then pkgs.pnpm_10 else pkgs.pnpm;
-            };
           })
       );
 

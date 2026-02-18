@@ -30,7 +30,6 @@ These tools are essential for a capable openclaw instance - screen capture, came
 | [**poltergeist**](https://github.com/steipete/poltergeist) | Universal file watcher with auto-rebuild |
 | [**sag**](https://github.com/steipete/sag) | Command-line ElevenLabs TTS with mac-style flags |
 | [**imsg**](https://github.com/steipete/imsg) | iMessage/SMS CLI |
-| [**oracle**](https://github.com/steipete/oracle) | Bundle prompts + files for AI queries |
 
 ## Usage (as openclaw plugins)
 
@@ -85,7 +84,7 @@ Tools track upstream GitHub releases directly (not Homebrew).
 go run ./cmd/update-tools
 ```
 
-Fetches latest release versions/URLs/hashes and updates the Nix expressions. Oracle uses pnpm and auto-derives its hash via build mismatch.
+Fetches latest release versions/URLs/hashes and updates the Nix expressions.
 
 ## CI
 
